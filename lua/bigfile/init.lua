@@ -2,8 +2,15 @@ local M = {}
 
 local config = require 'bigfile.config'
 
-local FILETYPE_PREFIX = 'bigfile-'
-local DETECTING = FILETYPE_PREFIX .. '_detecting_'
+local function bigfiletype(ft)
+  if not ft or ft == '' then
+    return 'bigfile'
+  else
+    return 'bigfile-' .. ft
+  end
+end
+
+local DETECTING = bigfiletype('_detecting_')
 
 function M.setup(opts)
   config.setup(opts)
@@ -34,7 +41,7 @@ function M.setup(opts)
           local name = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(ev.buf), ':p:~:.')
           vim.notify(('Big file detected: %s'):format(name), vim.log.levels.INFO)
         end
-        vim.bo[ev.buf].filetype = FILETYPE_PREFIX .. ft
+        vim.bo[ev.buf].filetype = bigfiletype(ft)
         if config.options.syntax then
           vim.schedule(function()
             vim.bo[ev.buf].syntax = ft
